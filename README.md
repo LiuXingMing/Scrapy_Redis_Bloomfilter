@@ -1,0 +1,2 @@
+# Scrapy_Redis_Bloomfilter
+基于Redis的Bloomfilter，并将其扩展到Scrapy框架。
