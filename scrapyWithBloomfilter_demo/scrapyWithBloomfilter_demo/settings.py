@@ -13,6 +13,7 @@ NEWSPIDER_MODULE = 'scrapyWithBloomfilter_demo.spiders'
 SCHEDULER = 'scrapyWithBloomfilter_demo.scrapy_redis.scheduler.Scheduler'
 SCHEDULER_PERSIST = True
 SCHEDULER_QUEUE_CLASS = 'scrapyWithBloomfilter_demo.scrapy_redis.queue.SpiderPriorityQueue'
+# SCHEDULER_QUEUE_CLASS = 'scrapyWithBloomfilter_demo.scrapy_redis.queue.SpiderSimpleQueue'
 
 # 种子队列的信息
 REDIE_URL = None

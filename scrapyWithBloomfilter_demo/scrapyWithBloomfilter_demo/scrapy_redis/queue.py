@@ -1,4 +1,4 @@
-from scrapy.utils.reqser import request_to_dict, request_from_dict
+from scrapy.utils.reqser import request_to_dict, request_from_dict, _find_method
 
 try:
     import cPickle as pickle
@@ -96,6 +96,39 @@ class SpiderPriorityQueue(Base):
             return self._decode_request(results[0])
 
 
+class SpiderSimpleQueue(Base):
+    """ url + callback """
+
+    def __len__(self):
+        """Return the length of the queue"""
+        return self.server.llen(self.key)
+
+    def push(self, request):
+        """Push a request"""
+        url = request.url
+        cb = request.callback
+        if callable(cb):
+            cb = _find_method(self.spider, cb)
+            data = '%s--%s' % (cb, url)
+            self.server.lpush(self.key, data)
+
+    def pop(self, timeout=0):
+        """Pop a request"""
+        if timeout > 0:
+            data = self.server.brpop(self.key, timeout=timeout)
+            if isinstance(data, tuple):
+                data = data[1]
+        else:
+            data = self.server.rpop(self.key)
+        if data:
+            cb, url = data.split('--', 1)
+            try:
+                cb = getattr(self.spider, str(cb))
+                return Request(url=url, callback=cb)
+            except AttributeError:
+                raise ValueError("Method %r not found in: %s" % (cb, self.spider))
+
+
 class SpiderStack(Base):
     """Per-spider stack"""
 
@@ -120,4 +153,4 @@ class SpiderStack(Base):
             return self._decode_request(data)
 
 
-__all__ = ['SpiderQueue', 'SpiderPriorityQueue', 'SpiderStack']
+__all__ = ['SpiderQueue', 'SpiderPriorityQueue', 'SpiderSimpleQueue', 'SpiderStack']
