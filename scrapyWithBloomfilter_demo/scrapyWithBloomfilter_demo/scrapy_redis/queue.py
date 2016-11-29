@@ -1,4 +1,5 @@
 from scrapy.utils.reqser import request_to_dict, request_from_dict, _find_method
+from scrapy.http import Request
 
 try:
     import cPickle as pickle
