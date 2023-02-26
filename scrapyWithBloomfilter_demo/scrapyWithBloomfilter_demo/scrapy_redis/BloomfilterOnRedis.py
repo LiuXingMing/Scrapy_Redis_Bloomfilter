@@ -39,7 +39,7 @@ class BloomFilter(object):
         for f in self.hashfunc:
             loc = f.hash(str_input)
             ret = ret & self.server.getbit(name, loc)
-        return ret
+        return bool(ret)
 
     def insert(self, str_input):
         name = self.key + str(int(str_input[0:2], 16) % self.blockNum)
