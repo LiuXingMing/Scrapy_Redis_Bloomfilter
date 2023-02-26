@@ -50,7 +50,7 @@ class BloomFilter(object):
         for f in self.hashfunc:
             loc = f.hash(str_input)
             ret = ret & self.server.getbit(name, loc)
-        return ret
+        return bool(ret)
 
     def insert(self, str_input):
         m5 = md5()
